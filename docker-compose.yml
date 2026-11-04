@@ -1,0 +1,40 @@
+services:
+  node-app:
+    image: node:26-alpine
+    container_name: node_service
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm run dev"
+
+  mysql:
+    image: mysql:8.0.34
+    ports:
+      - "127.0.0.1:3306:3306"
+    networks:
+      - movies
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: '1'
+      TZ: 'UTC'
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-time-zone=+00:00' ]
+    volumes:
+      - movies_mysql:/var/lib/mysql
+
+networks: 
+    movies:
+      name: movies_mysql
+
+volumes:
+  movies_mysql:
+    driver: local
