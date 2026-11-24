@@ -1,9 +1,7 @@
-//Importa o drive de conexão com o MySql
 const mysql = require("mysql2/promise");
 
 const connectionDB = async () => {
   try {
-    //Realiza a conexão
     const connection = mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,

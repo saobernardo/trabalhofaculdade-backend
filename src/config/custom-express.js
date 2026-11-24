@@ -8,19 +8,21 @@ const bodyParser = require("body-parser");
 
 const routes = require("../app/routes");
 
-//Config bodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Routes
 app.use("/v1/controle-filmes", routes);
 
-//Middleware que irá retorna a página 404 - not found
+/**
+ * Middleware for invalid routes
+ */
 app.use((req, res, next) => {
   return res.status(404).json({ message: "Route invalid" });
 });
 
-// Middleware que irá retornar página de erro
+/**
+ * Error middleware
+ */
 app.use((error, req, res, next) => {
   console.log(error);
 
